@@ -4,14 +4,15 @@ import (
 	"testing"
 )
 
-type Form struct {
+type InputsForm struct {
 	Name string `format:"required"`
 }
 
 func TestCheck(t *testing.T) {
-	var inputs = Form{
+	LoadLang("en_US", "./data/en_US.ini")
+	var inputs = InputsForm{
 		Name: "",
 	}
-	e := Check(&inputs)
+	e := Check(&inputs, "en_US")
 	println(e)
 }
