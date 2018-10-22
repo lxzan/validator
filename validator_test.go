@@ -9,10 +9,10 @@ type InputsForm struct {
 }
 
 func TestCheck(t *testing.T) {
-	LoadLang("en_US", "./data/en_US.ini")
+	LoadLang("zh_CN", "./data/zh_CN.ini")
 	var inputs = InputsForm{
 		Name: "",
 	}
-	e := Check(&inputs, "en_US")
+	e := Check(&inputs, "zh_CN")
 	println(e)
 }

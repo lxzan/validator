@@ -1,7 +1,6 @@
 package validator
 
 import (
-	"github.com/go-ini/ini"
 	"strings"
 )
 
@@ -21,10 +20,4 @@ func Template(tpl string, bind Form) string {
 		tpl = strings.Replace(tpl, tmp, v, -1)
 	}
 	return tpl
-}
-
-func GetParam(cfg *ini.File, section string, key string) string {
-	s, _ := cfg.GetSection(section)
-	k, _ := s.GetKey(key)
-	return k.String()
 }

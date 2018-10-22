@@ -1,58 +1,54 @@
 package validator
 
 import (
-	"github.com/go-ini/ini"
 	"reflect"
 	"strings"
 )
 
-type CheckFunc func(lang string, key string, val interface{}, limit ...float64) *Error
-
-type Checker map[string]CheckFunc
+type CheckFunc func(checker *Checker, key string, val interface{}, limit ...float64) *Error
 
 type Error struct {
 	Code int64  `json:"code"`
 	Msg  string `json:"msg"`
 }
 
-var checker = Checker{
-	"required": func(lang string, key string, val interface{}, limit ...float64) *Error {
+var checkFuncs = map[string]CheckFunc{
+	"required": func(checker *Checker, key string, val interface{}, limit ...float64) *Error {
 		v, ok := val.(string)
 		if !ok {
 			panic("required only support string type")
 		}
 
 		if strings.TrimSpace(v) == "" {
-			tpl := GetParam(dict[lang], "tpl", "check_param") + " " + GetParam(dict[lang], "tpl", "not_empty")
-			msg := Template(tpl, Form{
-				"name": GetParam(dict[lang], "dict", key),
-			})
 			return &Error{
 				Code: 1,
-				Msg:  msg,
+				Msg:  checker.GetMessage("not_empty", "name"),
+			}
+		}
+		return nil
+	},
+
+	"email": func(checker *Checker, key string, val interface{}, limit ...float64) *Error {
+		v, ok := val.(string)
+		if !ok {
+			panic("required only support string type")
+		}
+
+		if strings.TrimSpace(v) == "" {
+			return &Error{
+				Code: 1,
+				Msg:  checker.GetMessage("not_empty", "name"),
 			}
 		}
 		return nil
 	},
 }
 
-var dict = make(map[string]*ini.File)
-
-// loading dictionary
-func LoadLang(lang string, file string) {
-	f, err := ini.Load(file)
-	if err != nil {
-		panic("load " + file + " failed")
-	}
-	dict[lang] = f
-}
-
-var defaultLang = "zh_CN"
-
 func Check(inputs interface{}, lang ...string) *Error {
 	if len(lang) == 0 {
 		lang = append(lang, defaultLang)
 	}
+	checker := NewChecker(lang[0], dict[lang[0]])
 
 	t := reflect.TypeOf(inputs).Elem()
 	v := reflect.ValueOf(inputs).Elem()
@@ -63,11 +59,11 @@ func Check(inputs interface{}, lang ...string) *Error {
 		name := ToCamel(t.Field(i).Name)
 		fields := strings.Split(rule, "|")
 		for _, field := range fields {
-			f, ok := checker[field]
+			f, ok := checkFuncs[field]
 			if !ok {
 				panic(field + "not defined")
 			}
-			e := f(lang[0], name, val)
+			e := f(checker, name, val)
 			if e != nil {
 				return e
 			}
