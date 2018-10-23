@@ -110,6 +110,11 @@ func Check(inputs interface{}, lang ...string) *Error {
 		val := v.Field(i).Interface()
 
 		name := ToCamel(t.Field(i).Name)
+		alias := t.Field(i).Tag.Get("alias")
+		if alias != "" {
+			name = alias
+		}
+
 		fields := strings.Split(rule, "|")
 		for _, field := range fields {
 			e := isValid(checker, name, field, val)
