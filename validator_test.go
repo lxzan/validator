@@ -5,9 +5,9 @@ import (
 )
 
 type InputsForm struct {
-	Name string `format:"required|minLength:3"`
-	Age  int64  `format:"min:18"`
-	Sex  string `format:"required|switch:male,female"`
+	Name string `valid:"required|minLength:3"`
+	Age  int64  `valid:"min:18"`
+	Sex  string `valid:"required|switch:male,female"`
 }
 
 func TestCheck(t *testing.T) {
