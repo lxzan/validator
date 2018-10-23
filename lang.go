@@ -21,11 +21,11 @@ func LoadLang(lang string, file string) {
 func getParam(cfg *ini.File, section string, key string) (string, error) {
 	s, err1 := cfg.GetSection(section)
 	if err1 != nil {
-		return "", errors.New("section " + section + " not exist")
+		return "", errors.New("tpl " + section + " not exist")
 	}
 	k, err2 := s.GetKey(key)
 	if err2 != nil {
-		return "", errors.New("key " + key + " not exist")
+		return "", errors.New("dict " + key + " not exist")
 	}
 	return k.String(), nil
 }
