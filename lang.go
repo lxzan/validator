@@ -1,6 +1,9 @@
 package validator
 
-import "github.com/go-ini/ini"
+import (
+	"errors"
+	"github.com/go-ini/ini"
+)
 
 const defaultLang = "zh_CN"
 
@@ -15,8 +18,14 @@ func LoadLang(lang string, file string) {
 	dict[lang] = f
 }
 
-func GetParam(cfg *ini.File, section string, key string) string {
-	s, _ := cfg.GetSection(section)
-	k, _ := s.GetKey(key)
-	return k.String()
+func getParam(cfg *ini.File, section string, key string) (string, error) {
+	s, err1 := cfg.GetSection(section)
+	if err1 != nil {
+		return "", errors.New("section " + section + " not exist")
+	}
+	k, err2 := s.GetKey(key)
+	if err2 != nil {
+		return "", errors.New("key " + key + " not exist")
+	}
+	return k.String(), nil
 }
