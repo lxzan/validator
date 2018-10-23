@@ -60,7 +60,7 @@ func isValid(checker *Checker, name string, rule string, value interface{}) *Err
 		}
 		if !fn(v) {
 			return &Error{
-				Code: 0,
+				Code: 1,
 				Msg:  checker.GetMessage(arr[0], name),
 			}
 		}
@@ -81,7 +81,7 @@ func isValid(checker *Checker, name string, rule string, value interface{}) *Err
 
 		if !pass {
 			return &Error{
-				Code: 0,
+				Code: 1,
 				Msg:  checker.GetMessage(arr[0], name, limit),
 			}
 		}
