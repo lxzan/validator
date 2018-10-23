@@ -118,7 +118,7 @@ func Check(inputs interface{}, lang ...string) *Error {
 		fields := strings.Split(rule, "|")
 		for _, field := range fields {
 			e := isValid(checker, name, field, val)
-			if e != nil {
+			if e.Code != 0 {
 				return e
 			}
 		}
