@@ -86,7 +86,7 @@ func isValid(checker *Checker, name string, rule string, value interface{}) *Err
 			}
 		}
 	}
-	return nil
+	return &Error{}
 }
 
 type Error struct {
@@ -123,5 +123,5 @@ func Check(inputs interface{}, lang ...string) *Error {
 			}
 		}
 	}
-	return nil
+	return &Error{}
 }
