@@ -43,7 +43,7 @@ func isValid(checker *Checker, name string, rule string, value interface{}) *Err
 			}
 			attr, _ := getParam(checker.Dict, "dict", name)
 			msg = strings.Replace(msg, ":attr", attr, 1)
-			msg = strings.Replace(msg, ":avai", arr[1], 1)
+			msg = strings.Replace(msg, ":limit", arr[1], 1)
 			return &Error{
 				Code: 1,
 				Msg:  msg,
