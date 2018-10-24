@@ -29,3 +29,7 @@ func getParam(cfg *ini.File, section string, key string) (string, error) {
 	}
 	return k.String(), nil
 }
+
+func GetLang(lang string) *ini.File {
+	return dict[lang]
+}
