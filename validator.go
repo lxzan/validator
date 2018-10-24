@@ -89,6 +89,17 @@ func isValid(checker *Checker, name string, rule string, value interface{}) *Err
 	return &Error{}
 }
 
+// 设置默认值
+func setValue(field reflect.Value, v string) {
+	dataType := field.Type().Name()
+	if dataType == "string" && field.String() == "" {
+		field.SetString(v)
+	} else if (dataType == "int64" || dataType == "int") && field.Int() == 0 {
+		val, _ := strconv.Atoi(v)
+		field.SetInt(int64(val))
+	}
+}
+
 type Error struct {
 	Code int64  `json:"code"`
 	Msg  string `json:"msg"`
@@ -103,6 +114,11 @@ func Check(inputs interface{}, lang ...string) *Error {
 	t := reflect.TypeOf(inputs).Elem()
 	v := reflect.ValueOf(inputs).Elem()
 	for i := 0; i < t.NumField(); i++ {
+		defaultValue := t.Field(i).Tag.Get("default")
+		if defaultValue != "" {
+			setValue(v.Field(i), defaultValue)
+		}
+
 		rule := t.Field(i).Tag.Get("valid")
 		if rule == "" {
 			continue

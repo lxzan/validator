@@ -5,17 +5,17 @@ import (
 )
 
 type InputsForm struct {
-	Name string `valid:"required|minLength:3"`
-	Age  int64  `valid:"min:18"`
+	Name string `valid:"required|minLength:3" default:"caster"`
+	Age  int64  `valid:"min:18" default:"1"`
 	Sex  string `valid:"required|switch:male,female"`
 }
 
 func TestCheck(t *testing.T) {
 	LoadLang("zh_CN", "./data/zh_CN.ini")
 	var inputs = InputsForm{
-		Name: "lxz",
+		Name: "",
 		Age:  19,
-		Sex:  "unknown",
+		Sex:  "male",
 	}
 
 	e := Check(&inputs, "zh_CN")
