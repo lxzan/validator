@@ -2,6 +2,7 @@ package validator
 
 import (
 	"github.com/pkg/errors"
+	"reflect"
 	"regexp"
 	"strconv"
 	"strings"
@@ -197,4 +198,58 @@ func testSwitch(rule string, value string) (bool, error) {
 		}
 	}
 	return false, nil
+}
+
+func minSize(s string, value interface{}) (bool, error) {
+	arr := strings.Split(s, ":")
+	limit, err1 := strconv.Atoi(arr[1])
+	if err1 != nil {
+		return false, errors.New(" tag error")
+	}
+
+	tp := reflect.TypeOf(value).String()
+	if tp != "[]string" && tp != "[]int" && tp != "[]int64" {
+		return false, errors.New(" must be slice type")
+	}
+
+	if tp == "[]string" {
+		sli1, ok1 := value.([]string)
+		if ok1 {
+			return len(sli1) >= limit, nil
+		}
+	} else if tp == "[]int" {
+		sli2, ok2 := value.([]int)
+		if ok2 {
+			return len(sli2) >= limit, nil
+		}
+	}
+	sli3, _ := value.([]int64)
+	return len(sli3) >= limit, nil
+}
+
+func maxSize(s string, value interface{}) (bool, error) {
+	arr := strings.Split(s, ":")
+	limit, err1 := strconv.Atoi(arr[1])
+	if err1 != nil {
+		return false, errors.New(" tag error")
+	}
+
+	tp := reflect.TypeOf(value).String()
+	if tp != "[]string" && tp != "[]int" && tp != "[]int64" {
+		return false, errors.New(" must be slice type")
+	}
+
+	if tp == "[]string" {
+		sli1, ok1 := value.([]string)
+		if ok1 {
+			return len(sli1) <= limit, nil
+		}
+	} else if tp == "[]int" {
+		sli2, ok2 := value.([]int)
+		if ok2 {
+			return len(sli2) <= limit, nil
+		}
+	}
+	sli3, _ := value.([]int64)
+	return len(sli3) <= limit, nil
 }

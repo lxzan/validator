@@ -19,6 +19,8 @@ var valueMapping = map[string]func(s string, value interface{}) (bool, error){
 	"max":       max,
 	"minLength": minLength,
 	"maxLength": maxLength,
+	"minSize":   minSize,
+	"maxSize":   maxSize,
 }
 
 func AddFormatChecker(key string, fn func(s string) bool) {
