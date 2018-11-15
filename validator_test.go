@@ -12,7 +12,4 @@ type inputsForm struct {
 }
 
 func TestCheck(t *testing.T) {
-	URL := "https://blog/SunWuKong_Hadoop/article/details/74489202?utm_source=blogxgwz0"
-	f := IsURL(URL)
-	println(f)
 }

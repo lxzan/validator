@@ -36,7 +36,6 @@ const (
 	Latitude          string = "^[-+]?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?)$"
 	Longitude         string = "^[-+]?(180(\\.0+)?|((1[0-7]\\d)|([1-9]?\\d))(\\.\\d+)?)$"
 	DNSName           string = `^([a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62}){1}(\.[a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62})*[\._]?$`
-	IP                string = `(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))`
 	URLSchema         string = `((ftp|tcp|udp|wss?|https?):\/\/)`
 	URLUsername       string = `(\S+(:\S*)?@)`
 	URLPath           string = `((\/|\?|#)[^\s]*)`
@@ -105,7 +104,6 @@ var (
 	rxHasUpperCase      = regexp.MustCompile(hasUpperCase)
 	rxHasWhitespace     = regexp.MustCompile(hasWhitespace)
 	rxHasWhitespaceOnly = regexp.MustCompile(hasWhitespaceOnly)
-	rxIP                = regexp.MustCompile(IP)
 )
 
 func IsEmail(email string) bool {
@@ -122,7 +120,20 @@ func IsURL(url string) bool {
 }
 
 func IsIP(ip string) bool {
-	return rxIP.MatchString(ip)
+	arr := strings.Split(ip, ".")
+	if len(arr) != 4 {
+		return false
+	}
+	for _, item := range arr {
+		num, err := strconv.Atoi(item)
+		if err != nil {
+			return false
+		}
+		if num < 0 || num > 255 {
+			return false
+		}
+	}
+	return true
 }
 
 func IsRequired(s string) bool {
